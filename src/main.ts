@@ -12,7 +12,7 @@ if (
   window.location.hostname !== 'localhost'
 ) {
   window.location.href =
-    'https://unfair.spin-wheel.click' + window.location.pathname + window.location.search;
+    'https://spin-wheel-tan.vercel.app/' + window.location.pathname + window.location.search;
 }
 
 import { createApp } from 'vue';
