@@ -82,12 +82,19 @@
               disabled: Items?.length === 0
             }"
           >
-            <ItemInputGroup
-              :class="['col-12']"
-              v-for="item in Items"
-              :key="item._id"
-              :modelValue="item"
-            ></ItemInputGroup>
+            <Draggable
+              v-model="Items"
+              item-key="_id"
+              handle=".item-drag-handle"
+              @end="onItemsDragEnd"
+            >
+              <template #item="{ element }">
+                <ItemInputGroup
+                  :class="['col-12']"
+                  :modelValue="element"
+                ></ItemInputGroup>
+              </template>
+            </Draggable>
           </div>
           <div class="p-inputgroup col-12">
             <Button
@@ -205,6 +212,21 @@
           </div>
         </div>
       </TabPanel>
+      <TabPanel header="📜 History">
+        <div class="col-12">
+          <div v-if="History.length === 0" class="text-color-secondary">
+            No spins yet. Spin the wheel to see history here.
+          </div>
+          <ul v-else class="history-list">
+            <li v-for="entry in History" :key="entry.id" class="history-item">
+              <span class="history-label">{{ entry.label }}</span>
+              <span class="history-meta">
+                {{ entry.group }} · {{ new Date(entry.time).toLocaleTimeString() }}
+              </span>
+            </li>
+          </ul>
+        </div>
+      </TabPanel>
     </TabView>
 
     <Dialog v-model:visible="showRenameGroupDialog" modal dismissableMask header="Header">
@@ -284,6 +306,8 @@ import {
   Fairmode
 } from '@/services/SettingService';
 import ItemInputGroup from '@/components/sidebar-panel/ItemInputGroup.vue';
+import Draggable from 'vuedraggable';
+import { History } from '@/services/HistoryService';
 import type { IItem } from '@/interface/IItem';
 import { StringHelper } from '@/helpers/StringHelper';
 
@@ -416,6 +440,12 @@ const changeBulkEditMode = async () => {
   }
 };
 
+const onItemsDragEnd = async () => {
+  if (!Items.value) return;
+
+  await itemService.reorderItems(Items.value);
+};
+
 let badCSV: string | undefined = undefined;
 onMounted(() => {
   watch(GroupLabel, () => {
@@ -438,5 +468,29 @@ textarea {
 
 h2 {
   font-weight: 400;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.history-label {
+  font-weight: 600;
+}
+
+.history-meta {
+  font-size: 0.8rem;
+  color: var(--text-color-secondary, #9ca3af);
 }
 </style>

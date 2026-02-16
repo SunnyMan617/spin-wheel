@@ -10,7 +10,7 @@ export const Items = ref<PouchDB.Core.ExistingDocument<IItem>[]>();
 
 export class ItemService {
   // https://pouchdb.com/guides/compact-and-destroy.html#auto-compaction
-  private db: PouchDB.Database<IItem> = new PouchDB('item', { auto_compaction: true });
+  private db: PouchDB.Database<IItem> = new PouchDB('money-item', { auto_compaction: true });
 
   async init() {
     // const dbInfo = await this.db.info();
@@ -176,4 +176,34 @@ export class ItemService {
     await this.db.bulkDocs(items);
     await this.syncItems();
   };
+
+  public async reorderItems(
+    items: PouchDB.Core.ExistingDocument<IItem>[]
+  ): Promise<void> {
+    const docs = items.map((itm, idx) => ({
+      ...itm,
+      order: idx
+    }));
+
+    await this.db.bulkDocs(docs as any);
+    await this.syncItems();
+  }
+
+  public async moveItem(
+    item: PouchDB.Core.ExistingDocument<IItem>,
+    direction: -1 | 1
+  ): Promise<void> {
+    const groupItems = await this.getItemByGroupLabel(item.group);
+    const index = groupItems.findIndex((i) => i._id === item._id);
+    if (index === -1) return;
+
+    const newIndex = index + direction;
+    if (newIndex < 0 || newIndex >= groupItems.length) return;
+
+    const reordered = [...groupItems];
+    const [removed] = reordered.splice(index, 1);
+    reordered.splice(newIndex, 0, removed);
+
+    await this.reorderItems(reordered);
+  }
 }

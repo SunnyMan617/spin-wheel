@@ -1,11 +1,11 @@
 <template>
   <div class="p-inputgroup">
     <Button
-      icon="pi pi-trash"
-      severity="danger"
+      class="mr-2 item-drag-handle"
+      icon="pi pi-arrows-alt"
+      severity="secondary"
       outlined
-      aria-label="Remove"
-      @click="removeItem"
+      aria-label="Reorder item (use Up/Down keys)"
       tabindex="-1"
     />
     <InputText
@@ -13,7 +13,17 @@
       :model-value="label"
       @blur="updateLabel($event)"
       @submit="updateLabel($event)"
+      @keydown.up.prevent="moveUp"
+      @keydown.down.prevent="moveDown"
     ></InputText>
+    <Button
+      icon="pi pi-trash"
+      severity="danger"
+      outlined
+      aria-label="Remove"
+      @click="removeItem"
+      tabindex="-1"
+    />
     <InputNumber
       v-if="!Fairmode"
       :modelValue="weight"
@@ -74,6 +84,18 @@ function updateWeight(value: Number) {
 
 function removeItem() {
   itemService?.removeItem(props.modelValue);
+}
+
+async function moveUp() {
+  if (!itemService) return;
+
+  await itemService.moveItem(props.modelValue, -1);
+}
+
+async function moveDown() {
+  if (!itemService) return;
+
+  await itemService.moveItem(props.modelValue, 1);
 }
 
 onMounted(() => {

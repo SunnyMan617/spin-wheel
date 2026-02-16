@@ -1,19 +1,4 @@
 <template>
-  <Dropdown
-    id="group-dropdown"
-    :model-value="GroupLabel"
-    :options="GroupLabels"
-    class="mt-4 z-1"
-    @update:model-value="itemService?.changeGroupLabel"
-    :pt="{
-      input: {
-        class: 'text-xl sm:text-4xl md:text-6xl'
-      },
-      item: {
-        class: 'text-xl sm:text-xl md:text-3xl'
-      }
-    }"
-  />
   <ShareLink class="w-full flex justify-content-center z-1 mt-3" />
   <div ref="container" class="flex spin-container">
     <picture>
@@ -43,6 +28,7 @@ import { Wheel, type WheelProps } from 'spin-wheel';
 import { useDialog } from 'primevue/usedialog';
 import { TickSound, LabelLength } from '@/services/SettingService';
 import { GroupLabel, GroupLabels, ItemService, Items } from '@/services/ItemService';
+import { addHistory } from '@/services/HistoryService';
 import CongratulationDialog from '@/components/CongratulationDialog.vue';
 
 const itemService = inject<ItemService>('ItemService');
@@ -166,7 +152,13 @@ onMounted(() => {
   wheel.spin(10);
 
   wheel.onRest = ($event) => {
-    stopAndClearSound;
+    const hitItem = Items.value?.[$event.currentIndex];
+    if (hitItem) {
+      // Record history of this spin result
+      addHistory(hitItem);
+    }
+
+    stopAndClearSound();
     openCongratulationDialog($event);
   };
 
