@@ -1,5 +1,5 @@
 <template>
-  <ShareLink class="w-full flex justify-content-center z-1 mt-3" />
+  <ShareLink class="w-full flex justify-content-center mt-3" style="z-index: 150; position: relative;" />
   <div ref="container" class="flex spin-container">
     <picture>
       <source srcset="/img/image.avif" type="image/avif" />
@@ -22,16 +22,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, inject, watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import random from 'random';
 import { Wheel, type WheelProps } from 'spin-wheel';
 import { useDialog } from 'primevue/usedialog';
 import { TickSound, LabelLength } from '@/services/SettingService';
-import { GroupLabel, GroupLabels, ItemService, Items } from '@/services/ItemService';
+import { Items } from '@/services/ItemService';
 import { addHistory } from '@/services/HistoryService';
 import CongratulationDialog from '@/components/CongratulationDialog.vue';
-
-const itemService = inject<ItemService>('ItemService');
 
 const properties: WheelProps = {
   // debug: import.meta.env.DEV,
@@ -205,9 +203,11 @@ onMounted(() => {
   // Subtle 3D perspective tilt
   transform: perspective(1500px) rotateX(3deg);
 
-  // 3D canvas styling
+  // 3D canvas styling - pointer/indicator rendered here, must be at top
   :deep(canvas) {
     border-radius: 50%;
+    position: relative;
+    z-index: 100; // Highest - pointer/indicator must be visible above everything
     transform: translateZ(30px);
     filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.5))
       drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
@@ -240,6 +240,7 @@ onMounted(() => {
   height: 90vh;
 
   position: absolute;
+  z-index: 1; // Background layer - lowest
   top: calc(calc(50%) - calc(90vh / 2));
   left: calc(calc(50%) - calc(200vw / 2));
 
@@ -273,7 +274,7 @@ onMounted(() => {
 .icon {
   $icon-size: 13vh;
   cursor: pointer;
-  z-index: 10;
+  z-index: 200; // Absolute top - must be clickable above everything including pointer
 
   width: $icon-size;
   height: $icon-size;
