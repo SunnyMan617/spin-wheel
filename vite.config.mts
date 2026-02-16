@@ -12,6 +12,14 @@ export default defineConfig({
     sourcemap: true,
     chunkSizeWarningLimit: 1000
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        quietDeps: true,
+        silenceDeprecations: ['import', 'global-builtin']
+      }
+    }
+  },
   plugins: [
     vue(),
     VitePWA({
