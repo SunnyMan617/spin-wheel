@@ -17,7 +17,6 @@
         <SpinWheel></SpinWheel>
       </div>
     </div>
-    <Footer></Footer>
   </ScrollPanel>
 
   <SidebarPanel></SidebarPanel>

@@ -48,7 +48,7 @@ const properties: WheelProps = {
   // Should also change app.scss
   itemLabelFont:
     '"Suez One", "Mochiy Pop P One", "Jua", "Unbounded", "Mitr", "Noto Sans TC", "Noto Sans SC", "Noto Sans Lao", "Noto Color Emoji"',
-  itemLabelFontSizeMax: 70, // Larger for better visibility
+  itemLabelFontSizeMax: 20, // Reduced font size
   itemBackgroundColors: [
     '#fdc963',
     '#00cca8',
@@ -191,6 +191,8 @@ onMounted(() => {
   margin-top: -3.5rem;
   margin-bottom: -10vh;
   position: relative;
+  overflow: visible; // Allow pointer tip to extend above
+  overflow: visible; // Allow pointer tip to extend above
 
   // 3D container effect
   perspective: 1500px;
