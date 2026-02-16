@@ -44,10 +44,13 @@ const properties: WheelProps = {
   itemLabelAlign: 'left',
   itemLabelColors: ['#fff'],
   itemLabelBaselineOffset: -0.07,
+  // 3D text effect with stroke
+  itemLabelStrokeColor: '#000000',
+  itemLabelStrokeWidth: 3,
   // Should also change app.scss
   itemLabelFont:
     '"Suez One", "Mochiy Pop P One", "Jua", "Unbounded", "Mitr", "Noto Sans TC", "Noto Sans SC", "Noto Sans Lao", "Noto Color Emoji"',
-  itemLabelFontSizeMax: 55,
+  itemLabelFontSizeMax: 70, // Larger for better visibility
   itemBackgroundColors: [
     '#fdc963',
     '#00cca8',
@@ -62,8 +65,11 @@ const properties: WheelProps = {
     '#8b7856'
   ],
   rotationSpeedMax: 2000,
-  lineWidth: 1,
-  lineColor: '#fff',
+  lineWidth: 2, // Thicker lines for modern look
+  lineColor: '#ffffff',
+  // 3D border effect
+  borderColor: '#ffffff',
+  borderWidth: 4,
   items: []
 };
 
@@ -188,6 +194,34 @@ onMounted(() => {
   margin-bottom: -10vh;
   position: relative;
 
+  // 3D container effect
+  perspective: 1500px;
+  transform-style: preserve-3d;
+
+  // Modern depth with shadows
+  filter: drop-shadow(0 25px 70px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 10px 30px rgba(0, 0, 0, 0.4));
+
+  // Subtle 3D perspective tilt
+  transform: perspective(1500px) rotateX(3deg);
+
+  // 3D canvas styling
+  :deep(canvas) {
+    border-radius: 50%;
+    transform: translateZ(30px);
+    filter: drop-shadow(0 20px 50px rgba(0, 0, 0, 0.5))
+      drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
+    transition: filter 0.4s ease, transform 0.4s ease;
+  }
+
+  // Enhanced glow on hover
+  &:hover :deep(canvas) {
+    transform: translateZ(50px);
+    filter: drop-shadow(0 25px 60px rgba(255, 255, 255, 0.15))
+      drop-shadow(0 20px 50px rgba(0, 0, 0, 0.5))
+      drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
+  }
+
   @media (min-width: map-get($breakpoints, 'sm')) {
     height: 100vh;
   }
@@ -239,6 +273,7 @@ onMounted(() => {
 .icon {
   $icon-size: 13vh;
   cursor: pointer;
+  z-index: 10;
 
   width: $icon-size;
   height: $icon-size;
@@ -262,8 +297,21 @@ onMounted(() => {
   top: calc(calc(50%) - calc($icon-size / 2));
   left: calc(calc(50%) - calc($icon-size / 2));
 
+  // 3D button effect
+  transform: translateZ(80px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.6))
+    drop-shadow(0 5px 15px rgba(255, 255, 255, 0.1));
+
   &:hover {
-    filter: brightness(1.1);
+    transform: translateZ(100px) scale(1.08);
+    filter: drop-shadow(0 18px 40px rgba(0, 0, 0, 0.7))
+      drop-shadow(0 8px 20px rgba(255, 255, 255, 0.2))
+      brightness(1.15);
+  }
+
+  &:active {
+    transform: translateZ(70px) scale(0.98);
   }
 }
 </style>

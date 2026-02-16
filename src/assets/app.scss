@@ -38,3 +38,32 @@ body {
     text-decoration: underline;
   }
 }
+
+// Modern 3D effects for spin wheel
+.spin-container {
+  // Enhanced 3D canvas rendering
+  canvas {
+    will-change: transform, filter;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+// Modern glassmorphism effect overlay (optional enhancement)
+.spin-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 70%
+  );
+  z-index: 1;
+}
+ 
