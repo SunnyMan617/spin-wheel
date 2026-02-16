@@ -7,12 +7,30 @@
  * Please be aware that you are solely permitted to distribute this project under the "AGPL-3.0" license.
  * If you have adhered to the terms of this license, you are welcome to make modifications to this section as needed.
  */
-if (
-  !window.location.hostname.endsWith('spin-wheel.click') &&
-  window.location.hostname !== 'localhost'
-) {
-  window.location.href =
-    'https://spin-wheel-tan.vercel.app/' + window.location.pathname + window.location.search;
+// Only redirect in production and avoid redirect loops
+if (import.meta.env.PROD) {
+  const hostname = window.location.hostname;
+  const allowedHostnames = [
+    'spin-wheel.click',
+    'localhost',
+    '127.0.0.1',
+    'spin-wheel-tan.vercel.app' // Allow Vercel deployment
+  ];
+  
+  // Check if hostname is allowed (including subdomains of spin-wheel.click)
+  const isAllowed = allowedHostnames.some(allowed => 
+    hostname === allowed || hostname.endsWith('.' + allowed)
+  ) || hostname.endsWith('.vercel.app'); // Allow all Vercel subdomains
+  
+  // Only redirect if not allowed and not already on the target domain
+  if (!isAllowed && !hostname.includes('spin-wheel-tan.vercel.app')) {
+    const targetUrl = 'https://spin-wheel-tan.vercel.app' + window.location.pathname + window.location.search;
+    // Prevent redirect loop by checking if we're already redirecting
+    if (window.location.href !== targetUrl) {
+      window.location.href = targetUrl;
+      return; // Stop execution to prevent further code from running
+    }
+  }
 }
 
 import { createApp } from 'vue';

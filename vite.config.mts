@@ -23,8 +23,15 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt', // Changed from 'autoUpdate' to prevent infinite reloads
       includeAssets: ['favicon.ico', '/img/icons/ios/180.png'],
+      workbox: {
+        // Skip waiting to prevent reload loops
+        skipWaiting: false,
+        clientsClaim: false,
+        // Only update when user navigates (not automatically)
+        runtimeCaching: []
+      },
       manifest: {
         name: 'Unfair Spin Wheel',
         short_name: 'Unfair Spin Wheel',
